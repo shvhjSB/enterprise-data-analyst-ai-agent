@@ -1,73 +1,105 @@
-# Text-to-SQL Analytics Platform (Enterprise-ready)
+# Enterprise Agentic Text-to-SQL Analytics Platform
 
-Production-grade, modular Text-to-SQL analytics backend with agentic orchestration (Agno), secure schema introspection, SQL planning/generation/validation, safe execution, NL insights, and Plotly chart specs.
+Production-grade Agentic AI system that converts natural language into optimized SQL queries using a multi-agent architecture. Designed to simulate real-world data analyst workflows with secure, scalable, and auditable execution.
 
-## Key Features
-- **FastAPI (async)**, UI-agnostic APIs
-- **Agno multi-agent orchestration** with structured intent → plan → SQL → validation → execution → insights → visualization → recommendations
-- **Secure DB config**: Fernet-encrypted configs on disk; secrets via env
-- **SQL safety**: read-only enforcement, destructive statement blocking, row limits, timeouts, PII guardrails
-- **Auditable**: structured audit logs (question, SQL, timings, row counts, errors)
-- **Model-agnostic LLM**: provider interface + OpenAI/Azure OpenAI/Anthropic stubs
-- **Local validation**: SQLite for examples + tests (async aiosqlite)
+## 🚀 Overview
 
-## Project Structure
-```text
+This platform enables users to query structured databases using natural language. It leverages agentic orchestration to plan, generate, validate, and execute SQL queries while ensuring safety, accuracy, and interpretability.
+
+## 🧠 Key Features
+
+* Multi-agent workflow: Planner → SQL Generator → Validator → Executor → Insights → Visualization
+* Secure query execution with read-only enforcement, PII guardrails, and query limits
+* Schema-aware SQL generation for higher accuracy
+* Automatic error correction and retry mechanisms
+* Structured audit logging (queries, latency, errors, row counts)
+* Model-agnostic LLM support (OpenAI, Azure OpenAI, Anthropic)
+* Interactive visualization support using Plotly
+
+## 🏗️ Architecture
+
+User Query → Planner Agent → SQL Generator → Validator → Execution Engine → Insights Agent → Visualization → Recommendations
+
+## 🔐 Security & Reliability
+
+* Fernet-encrypted database configurations
+* Environment-based secret management
+* Query timeout controls and row limits
+* Strict blocking of destructive SQL operations
+
+## ⚙️ Tech Stack
+
+* Backend: FastAPI (async)
+* Orchestration: Agno (multi-agent system)
+* LLMs: OpenAI / Azure OpenAI / Anthropic
+* Database: SQLite (dev), extensible to Postgres/MySQL
+* Visualization: Plotly
+* Testing: Pytest + aiosqlite
+
+## 📂 Project Structure
+
 text2sql_app/
-├── agents/
-├── core/
-├── api/
-├── ui/
-├── prompts/
-└── tests/
-```
+├── agents/          # Agent logic (planner, generator, validator)
+├── core/            # Core execution and orchestration
+├── api/             # FastAPI endpoints
+├── ui/              # Streamlit interface
+├── prompts/         # LLM prompt templates
+└── tests/           # Unit and integration tests
 
-## Quickstart
-### 1) Create venv
+## ⚡ Quickstart
+
+1. Create virtual environment
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e .
 ```
 
-### 2) Configure environment
-Create `.env` (or export env vars):
-```bash
-# Security
-TEXT2SQL_APP_MASTER_KEY=CHANGE_ME_32+_BYTES_BASE64_OR_HEX
+2. Configure environment
+   Set `.env`:
+
+```
+TEXT2SQL_APP_MASTER_KEY=CHANGE_ME
 TEXT2SQL_APP_API_KEY=dev-api-key
 
-# LLM (choose one provider)
-LLM_PROVIDER=openai  # openai|azure_openai|anthropic
+LLM_PROVIDER=openai
 OPENAI_API_KEY=...
 OPENAI_MODEL=gpt-4.1-mini
-
-# Optional
-TEXT2SQL_APP_DATA_DIR=.data
-TEXT2SQL_APP_MAX_ROWS=5000
-TEXT2SQL_APP_QUERY_TIMEOUT_SECONDS=30
 ```
 
-### 3) Run API
+3. Run API
+
 ```bash
 uvicorn text2sql_app.main:app --reload
 ```
 
-### 4) Run Streamlit demo
+4. Run UI
+
 ```bash
 streamlit run text2sql_app/ui/streamlit_app.py
 ```
 
-## Example flow
-1. `POST /connect-db` with a SQLite URL, e.g. `sqlite+aiosqlite:///./example.db`
-2. `POST /introspect` to build schema cache
-3. `POST /ask` with natural language question
+## 📊 Example Queries
 
-## Example questions
-- "Total revenue by month for 2025"
-- "Top 10 customers by lifetime spend"
-- "What is the average order value by product category?"
+* "Total revenue by month for 2025"
+* "Top 10 customers by lifetime spend"
+* "Average order value by category"
 
-## Notes
-- This repo defaults to **SQLite** for local development. Other DBs (Postgres/MySQL/etc.) are supported via SQLAlchemy async drivers.
-- Store credentials in environment variables; encrypted configs contain connection URLs only.
+## 💡 Use Cases
+
+* Enterprise data analytics automation
+* Business intelligence assistants
+* Self-service analytics for non-technical users
+* Decision support systems
+
+## 🧩 Future Enhancements
+
+* LangGraph-based agent orchestration
+* Multi-database federation
+* Conversational memory for follow-up queries
+* Role-based access control (RBAC)
+
+---
+
+👉 Inspired by real-world enterprise analytics workflows and designed to replicate how data analysts interact with databases using natural language.
