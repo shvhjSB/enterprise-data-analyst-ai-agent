@@ -24,6 +24,7 @@ class SQLGenerationAgent:
         system = (
             "You are an Expert SQL Developer. Generate precise SQL. "
             "You MUST strictly follow the provided CTE Execution Plan. "
+            "CRITICAL RULE FOR WINDOW FUNCTIONS: Never JOIN a base table to a CTE that only contains Window Functions (like SUM() OVER()) without a GROUP BY or DISTINCT. This causes Cartesian Explosion/Fan-out. Instead, calculate Window Functions directly in the SELECT clause of your aggregated base CTE."
             "Return ONLY JSON."
         )
         user = (

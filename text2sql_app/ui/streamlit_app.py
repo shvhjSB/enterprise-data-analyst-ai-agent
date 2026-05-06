@@ -53,15 +53,69 @@ if st.button("Run"):
     st.dataframe(out["result"]["rows"], width="stretch")
 
     if out.get("chart_spec"):
-        st.subheader("Chart")
-        import plotly.graph_objects as go
-        import json
-        import plotly.io as pio
-
-        # chart_spec is a dict, convert to JSON string for from_json
-        chart_json = json.dumps(out["chart_spec"])
-        fig = pio.from_json(chart_json)
-        st.plotly_chart(fig, width="stretch")
+        st.subheader("Visualization")
+        chart_spec = out["chart_spec"]
+        
+        # 1. Agar chart_type "kpi_card" hai
+        if chart_spec.get("type") == "kpi_card":
+            st.metric(label=chart_spec.get("title", "Key Metric"), value=chart_spec.get("value"))
+            
+        # 2. Plotly Charts
+        else:
+            import plotly.express as px
+            import pandas as pd
+            
+            df_data = {}
+            x_col = chart_spec.get("x_label") or "X"
+            y_col = chart_spec.get("y_label") or "Y"
+            
+            if "x" in chart_spec: df_data[x_col] = chart_spec["x"]
+            if "y" in chart_spec: df_data[y_col] = chart_spec["y"]
+            
+            color_col = None
+            if "color" in chart_spec and chart_spec["color"]:
+                color_col = chart_spec.get("color_label") or "Color"
+                df_data[color_col] = chart_spec["color"]
+                
+            df_viz = pd.DataFrame(df_data)
+            title = chart_spec.get("title", "")
+            c_type = chart_spec.get("type")
+            
+            try:
+                # Dynamic Chart Rendering
+                if c_type == "horizontal_bar":
+                    # Y-axis ko strictly String (Category) bana do, taaki Plotly numbers dekh kar confuse na ho
+                    df_viz[y_col] = df_viz[y_col].astype(str)
+                    
+                    # Yahan fix kiya hai: AI ne X ko value aur Y ko category rakha hai, toh x=x_col hi rahega
+                    fig = px.bar(df_viz, x=x_col, y=y_col, color=color_col, orientation='h', title=title)
+                    fig.update_layout(yaxis={'categoryorder':'total ascending'})
+                    fig.update_yaxes(type='category')
+                    
+                elif c_type == "line":
+                    fig = px.line(df_viz, x=x_col, y=y_col, color=color_col, title=title)
+                elif c_type == "pie":
+                    fig = px.pie(df_viz, names=x_col, values=y_col, title=title)
+                elif c_type == "donut":
+                    fig = px.pie(df_viz, names=x_col, values=y_col, hole=0.4, title=title)
+                elif c_type == "scatter":
+                    fig = px.scatter(df_viz, x=x_col, y=y_col, color=color_col, title=title)
+                else: 
+                    # Auto-Fallback Check: Agar normal bar hai aur label bohot lamba hai, toh UI khud horizontal karega
+                    if df_viz[x_col].dtype == 'object' and df_viz[x_col].astype(str).str.len().max() > 15:
+                        df_viz[x_col] = df_viz[x_col].astype(str)
+                        # Yahan override ho raha hai, isliye x=y_col hoga
+                        fig = px.bar(df_viz, x=y_col, y=x_col, color=color_col, orientation='h', title=title)
+                        fig.update_layout(yaxis={'categoryorder':'total ascending'})
+                    else:
+                        # Ensure categorical axis for numeric IDs on standard bar
+                        if x_col in df_viz.columns and pd.api.types.is_numeric_dtype(df_viz[x_col]) and df_viz[x_col].nunique() < 20:
+                            df_viz[x_col] = df_viz[x_col].astype(str)
+                        fig = px.bar(df_viz, x=x_col, y=y_col, color=color_col, title=title)
+                
+                st.plotly_chart(fig, use_container_width=True)
+            except Exception as e:
+                st.warning(f"Could not render the chart perfectly. Error: {e}")
 
     st.subheader("Answer")
     st.write(out["answer"])
