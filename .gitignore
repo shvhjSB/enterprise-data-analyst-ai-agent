@@ -1,12 +1,60 @@
-.data
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+
+# =========================
+# Virtual Environments
+# =========================
+.venv/
+venv/
+env/
+
+# =========================
+# Environment Variables
+# =========================
 .env
-.venv
-.pytest_cache
-.ruff_cache
-.mypy_cache
-.pytest_cache
-.ruff_cache
-.mypy_cache
-.pytest_cache
-.ruff_cache
-.mypy_cache
+.env.*
+
+# =========================
+# Data / Local Storage
+# =========================
+.data/
+
+# =========================
+# Ignore egg metadata
+# =========================
+*.egg-info/
+.eggs/
+
+# =========================
+# Testing / Cache
+# =========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+
+# =========================
+# Build files
+# =========================
+build/
+dist/
+
+# =========================
+# Logs
+# =========================
+*.log
+
+# =========================
+# IDE / Editors
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db

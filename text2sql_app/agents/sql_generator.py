@@ -1,16 +1,7 @@
-"""SQL Generation Agent.
-
-Generates dialect-aware SQL from a plan.
-In this scaffold, dialect handling is simple; production would map by SQLAlchemy dialect.
-"""
-
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Any, Dict
-
 from text2sql_app.core.llm import get_llm
-
 
 SQL_SCHEMA: Dict[str, Any] = {
     "type": "object",
@@ -22,27 +13,29 @@ SQL_SCHEMA: Dict[str, Any] = {
     "required": ["sql", "explanation"],
 }
 
-
 @dataclass
 class SQLDraft:
     sql: str
     explanation: str
 
-
 class SQLGenerationAgent:
-    async def run(self, plan_json: Dict[str, Any], schema_compact: str, dialect: str) -> SQLDraft:
+    async def run(self, plan_json: Dict[str, Any], intent_json: Dict[str, Any], schema_compact: str, dialect: str) -> SQLDraft:
         llm = get_llm()
         system = (
-            "You are a SQL generator for enterprise analytics. "
-            "Generate a single SELECT query only (no CTE recursion required unless necessary). "
-            "Never use SELECT *. Quote identifiers safely if needed. "
-            "Return ONLY JSON matching schema."
+            "You are an Expert SQL Developer. Generate precise SQL. "
+            "You MUST strictly follow the provided CTE Execution Plan. "
+            "Return ONLY JSON."
         )
         user = (
             f"DB dialect: {dialect}\n\n"
-            f"Plan JSON: {plan_json}\n\n"
-            f"Schema hints (compact):\n{schema_compact}\n\n"
-            "Output SQL + a short explanation."
+            f"Query Type: {intent_json.get('query_type')}\n"
+            f"Execution Plan: {plan_json.get('cte_steps')}\n\n"
+            f"Schema hints:\n{schema_compact}\n\n"
+            "--- SYNTAX RULES ---\n"
+            "- NEVER put window functions (like ROW_NUMBER) in a HAVING or WHERE clause directly. ALWAYS put them in a CTE or Subquery first, then filter in the outer query.\n"
+            "- Ensure all column references in JOINs are fully qualified (e.g., table_name.column_name) to avoid ambiguity.\n"
+            "--------------------\n\n"
+            "Output the final SQL and a brief explanation."
         )
         res = await llm.complete_json(system=system, user=user, schema=SQL_SCHEMA, temperature=0.0)
         obj = res.json or {}
