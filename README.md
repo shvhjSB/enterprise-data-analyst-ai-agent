@@ -52,7 +52,7 @@ text2sql_app/
 
 ```bash
 python -m venv .venv
-source .venv/bin/activate
+.venv\Scripts\Activate
 pip install -e .
 ```
 
