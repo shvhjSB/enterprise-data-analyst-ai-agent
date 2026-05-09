@@ -11,14 +11,34 @@ Production-grade Agentic AI system that converts complex natural language into o
 
 This platform empowers users to query structured enterprise databases purely through semantic prompts. It leverages **LangGraph-based agentic orchestration** to plan, generate, validate, and execute SQL queries while ensuring data integrity, strict guardrails, and automated visualization rendering.
 
-## 📸 Application Screenshots
+## 📸 Application Workflow Walkthrough
 
-*(Replace the paths below with your actual image paths from your repository, e.g., `images/dashboard.png`)*
-
-| Chat Interface & SQL Generation | Autonomous Visualization (Plotly) |
-| :---: | :---: |
-| <img src="path/to/your/ui_screenshot.png" width="400"/> | <img src="path/to/your/chart_screenshot.png" width="400"/> |
-| *Natural Language to SQL with execution logs* | *Dynamic Enterprise Charts (KPIs, Time-series)* |
+<table width="100%">
+  <tr>
+    <td width="50%" align="center"><b>1. Semantic Prompt & SQL Generation</b></td>
+    <td width="50%" align="center"><b>2. Query Execution & Data Retrieval</b></td>
+  </tr>
+  <tr>
+    <td><img src="images/1_prompt_sql.png" width="100%" alt="User Prompt and SQL Generation"/></td>
+    <td><img src="images/2_sql_table.png" width="100%" alt="Remaining SQL and Result Table"/></td>
+  </tr>
+  <tr>
+    <td align="center"><i>User inputs natural language; Agent plans and begins writing complex SQL (CTEs, Window Functions).</i></td>
+    <td align="center"><i>Full SQL execution logging alongside the retrieved structured data table.</i></td>
+  </tr>
+  <tr>
+    <td width="50%" align="center"><b>3. Autonomous Visualization & Answer</b></td>
+    <td width="50%" align="center"><b>4. AI Insights & Next Steps</b></td>
+  </tr>
+  <tr>
+    <td><img src="images/3_viz_answer.png" width="100%" alt="Dynamic Plotly Chart and Answer"/></td>
+    <td><img src="images/4_insights_next.png" width="100%" alt="Insights and Recommended Questions"/></td>
+  </tr>
+  <tr>
+    <td align="center"><i>Agent evaluates data cardinality to render the optimal Plotly chart, paired with a conversational summary.</i></td>
+    <td align="center"><i>Actionable bullet-point business insights and intelligently suggested follow-up analytical queries.</i></td>
+  </tr>
+</table>
 
 ## 🧠 Key Features
 
